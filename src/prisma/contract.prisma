@@ -1,0 +1,25 @@
+// use prisma-8
+
+model Todo {
+  id        Int       @unique @id @default(autoincrement())
+  text      String   
+  completed Boolean   @default(false)
+}
+
+model Forum {
+  id        String    @id @default(uuid())
+  name      String
+  messages  Message[]
+}
+
+model Message {
+  id        Int       @id @default(autoincrement())
+  text      String
+  forum     Forum     @relation(fields: [forumid], references: [id])
+  forumid   String
+}
+
+model User {
+  username      String
+  passwordHash  String
+}
