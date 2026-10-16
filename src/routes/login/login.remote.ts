@@ -1,48 +1,34 @@
 import { scryptSync, randomBytes, timingSafeEqual } from "node:crypto";
 import { form, getRequestEvent, query } from "$app/server";
 import { redirect, invalid } from "@sveltejs/kit";
+import { error } from "node:console";
 import * as v from "valibot";
 import { db } from "#lib";
-import { error } from "node:console";
 
-export const signup = form(
-    v.object({
-        username: v.string(),
-        password: v.pipe(v.string(), v.minLength(8, "Minst 8 tecken"))
-    }),
-    async ({username, password}, issue) => {
-        const taken = await db.orm.public.User.first({username})
-        if (taken)
-            invalid(issue.username('Användarnamnet är upptaget'))
-        const user = await db.orm.public.User.create({
-            username,
-            passwordHash: hashPassword(password)
-        })
-    }
-)
+
 
 export const login = form(
     v.object({
         username: v.string(),
-        password: v.string()
+        _password: v.string()
     }),
-    async ({username, password}) => {
+    async ({username, _password}) => {
+        const {cookies} = getRequestEvent();
         const user = await db.orm.public.User.where({ username }).first();
-        if (!user || !verifyPassword(password, user.passwordHash)){
-            return {error: 'Fel användarnamn eller lösenord'}}
+        if (!user || !verifyPassword(_password, user.passwordHash)){
+            return {error: 'Wrong username or password'}}
         else {
-            const {cookies} = getRequestEvent();
-            cookies.set("logged_in", "yep", { path: "/", httpOnly: true})
+            cookies.set("user_id", user.id, { path: "/", httpOnly: true})
             redirect(303, "/")
         }
     }
 )
 
-function hashPassword(password: string){
-    const salt = randomBytes(16).toString('hex');
-    const hash = scryptSync(password, salt, 64).toString('hex');
-    return `${salt}:${hash}`;
-}
+export const logout = form(
+    async () => {
+    const {cookies} = getRequestEvent();
+    cookies.delete("user_id", {path: "/"})}
+)
 
 function verifyPassword(password: string, stored: string){
     const [salt, hash] = stored.split(':');

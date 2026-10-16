@@ -173,6 +173,13 @@
           },
           "User": {
             "fields": {
+              "id": {
+                "nullable": false,
+                "type": {
+                  "codecId": "pg/text@1",
+                  "kind": "scalar"
+                }
+              },
               "passwordHash": {
                 "nullable": false,
                 "type": {
@@ -191,6 +198,9 @@
             "relations": {},
             "storage": {
               "fields": {
+                "id": {
+                  "column": "id"
+                },
                 "passwordHash": {
                   "column": "passwordHash"
                 },
@@ -257,6 +267,7 @@
               },
               "foreignKeys": [
                 {
+                  "onDelete": "cascade",
                   "source": {
                     "columns": [
                       "forumid"
@@ -333,6 +344,11 @@
             },
             "user": {
               "columns": {
+                "id": {
+                  "codecId": "pg/text@1",
+                  "nativeType": "text",
+                  "nullable": false
+                },
                 "passwordHash": {
                   "codecId": "pg/text@1",
                   "nativeType": "text",
@@ -346,7 +362,18 @@
               },
               "foreignKeys": [],
               "indexes": [],
-              "uniques": []
+              "primaryKey": {
+                "columns": [
+                  "id"
+                ]
+              },
+              "uniques": [
+                {
+                  "columns": [
+                    "username"
+                  ]
+                }
+              ]
             }
           }
         },
@@ -354,10 +381,10 @@
         "kind": "postgres-schema"
       }
     },
-    "storageHash": "20309698fbf31eaea87be65a8776b7560af908cab4af138d5b39d00cc5ea3431"
+    "storageHash": "2bac845ed865560f6af169ba25276f76a66e6276ec75c8a53ed612fa8822de52"
   },
   "execution": {
-    "executionHash": "367b18f036b99901eaeb95598f89928405df26e27ea2ebbf3d879f997e230c5e",
+    "executionHash": "c09bee2f73f38c9126bd7966926ddf657a91b8ccd128ada81312bef46d02438c",
     "mutations": {
       "defaults": [
         {
@@ -369,6 +396,17 @@
             "column": "id",
             "namespace": "public",
             "table": "forum"
+          }
+        },
+        {
+          "onCreate": {
+            "id": "uuidv4",
+            "kind": "generator"
+          },
+          "ref": {
+            "column": "id",
+            "namespace": "public",
+            "table": "user"
           }
         }
       ]

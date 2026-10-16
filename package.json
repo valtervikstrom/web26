@@ -15,7 +15,7 @@
   "devDependencies": {
     "@prisma/cli-engine": "^0.4.0",
     "@sveltejs/adapter-auto": "next",
-    "@sveltejs/kit": "next",
+    "@sveltejs/kit": "^3.1.0",
     "@sveltejs/vite-plugin-svelte": "^7.2.0",
     "@types/node": "^26.6.1",
     "prisma": "^8.0.0-rc.15",
@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "@prisma/orm-postgres": "^8.0.0-rc.11",
+    "@sveltejs/adapter-node": "^6.0.0",
     "dotenv": "^18.0.0",
     "valibot": "^1.4.2"
   }

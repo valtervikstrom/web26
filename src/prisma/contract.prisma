@@ -15,11 +15,12 @@ model Forum {
 model Message {
   id        Int       @id @default(autoincrement())
   text      String
-  forum     Forum     @relation(fields: [forumid], references: [id])
+  forum     Forum     @relation(fields: [forumid], references: [id], onDelete: Cascade)
   forumid   String
 }
 
 model User {
-  username      String
+  id            String  @id @default(uuid())
+  username      String  @unique
   passwordHash  String
 }
